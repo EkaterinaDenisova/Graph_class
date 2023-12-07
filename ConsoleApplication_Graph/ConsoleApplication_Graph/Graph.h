@@ -526,6 +526,11 @@ vector<T> Graph<T>::BreadthFirstSearch(const T& beginVertex) {
 	return l;
 }
 
+
+// загрузка графа из файла
+
+
+
 // алгоритм Беллмана-Форда
 // возвращает вектор из кратчайших путей до каждой вершины
 template <typename T>

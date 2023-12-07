@@ -1,39 +1,39 @@
 #pragma once
-//author: Денисова Екатерина
+//author: Р”РµРЅРёСЃРѕРІР° Р•РєР°С‚РµСЂРёРЅР°
 
 #include <iostream>
 #include <vector>
-#include <stdexcept> // для исключений
+#include <stdexcept> // РґР»СЏ РёСЃРєР»СЋС‡РµРЅРёР№
 #include "AbsIterator.h"
-// класс узла списка
+// РєР»Р°СЃСЃ СѓР·Р»Р° СЃРїРёСЃРєР°
 template <typename T>
 class Node {
 public:
     T data;
     Node<T>* next;
 
-    // конструктор с параметром
+    // РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ СЃ РїР°СЂР°РјРµС‚СЂРѕРј
     Node(const T& data1) {
         this->data = data1;
         next = nullptr;
     }
 };
 
-// класс односвязного списка
+// РєР»Р°СЃСЃ РѕРґРЅРѕСЃРІСЏР·РЅРѕРіРѕ СЃРїРёСЃРєР°
 template <typename T>
 class LinkedList {
 private:
-    // указатель на начало списка
+    // СѓРєР°Р·Р°С‚РµР»СЊ РЅР° РЅР°С‡Р°Р»Рѕ СЃРїРёСЃРєР°
     Node<T>* head;
 
 public:
-    // конструктор без параметров
+    // РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ Р±РµР· РїР°СЂР°РјРµС‚СЂРѕРІ
     LinkedList() {
         head = nullptr;
     }
 
-    // деструктор
-    // удаляются все узлы в списке
+    // РґРµСЃС‚СЂСѓРєС‚РѕСЂ
+    // СѓРґР°Р»СЏСЋС‚СЃСЏ РІСЃРµ СѓР·Р»С‹ РІ СЃРїРёСЃРєРµ
     ~LinkedList() {
         while (head != nullptr) {
             Node<T>* temp = head;
@@ -42,37 +42,37 @@ public:
         }
     }
 
-    // добавление узла в конец списка
+    // РґРѕР±Р°РІР»РµРЅРёРµ СѓР·Р»Р° РІ РєРѕРЅРµС† СЃРїРёСЃРєР°
     void addNode(const T& data);
-    // Удаление узла по значению
+    // РЈРґР°Р»РµРЅРёРµ СѓР·Р»Р° РїРѕ Р·РЅР°С‡РµРЅРёСЋ
     void removeNode(const T& data);
-    // поиск узла по значению
-    // true если узел найден, иначе false
+    // РїРѕРёСЃРє СѓР·Р»Р° РїРѕ Р·РЅР°С‡РµРЅРёСЋ
+    // true РµСЃР»Рё СѓР·РµР» РЅР°Р№РґРµРЅ, РёРЅР°С‡Рµ false
     bool searchNode(T& data);
-    // поиск индекса узла, если не найден, то -1
+    // РїРѕРёСЃРє РёРЅРґРµРєСЃР° СѓР·Р»Р°, РµСЃР»Рё РЅРµ РЅР°Р№РґРµРЅ, С‚Рѕ -1
     int searchNodeInd(const T& data);
-    // значение узла по индексу
+    // Р·РЅР°С‡РµРЅРёРµ СѓР·Р»Р° РїРѕ РёРЅРґРµРєСЃСѓ
     T& dataByInd(int ind);
-    // вывод списка в консоль
+    // РІС‹РІРѕРґ СЃРїРёСЃРєР° РІ РєРѕРЅСЃРѕР»СЊ
     void printList();
-    // количеств узлов в списке
+    // РєРѕР»РёС‡РµСЃС‚РІ СѓР·Р»РѕРІ РІ СЃРїРёСЃРєРµ
     int ListSize();
     std::vector<T> ListToVec();
 
 
-    // класс итератора для Linked List
+    // РєР»Р°СЃСЃ РёС‚РµСЂР°С‚РѕСЂР° РґР»СЏ Linked List
     template<typename T>
     class LinkedListIterator : public AbsIterator<T> {
     private:
-        Node<T>* current;  // Текущий узел
+        Node<T>* current;  // РўРµРєСѓС‰РёР№ СѓР·РµР»
 
     public:
-        // конструктор с параметром
+        // РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ СЃ РїР°СЂР°РјРµС‚СЂРѕРј
         LinkedListIterator(Node<T>* x) {
             current = x;
         }
 
-        // оператор сравнения
+        // РѕРїРµСЂР°С‚РѕСЂ СЃСЂР°РІРЅРµРЅРёСЏ
         bool operator==(const AbsIterator<T>& o) const override {
             return current == dynamic_cast<const LinkedListIterator<T>&>(o).current;
         }
@@ -81,20 +81,20 @@ public:
             return !(current == dynamic_cast<const LinkedListIterator<T>&>(o).current);
         }
 
-        // оператор доступа к данным
+        // РѕРїРµСЂР°С‚РѕСЂ РґРѕСЃС‚СѓРїР° Рє РґР°РЅРЅС‹Рј
         T& operator*() const override {
-            //возвращает данные текущего узла
+            //РІРѕР·РІСЂР°С‰Р°РµС‚ РґР°РЅРЅС‹Рµ С‚РµРєСѓС‰РµРіРѕ СѓР·Р»Р°
             return current->data;
         }
 
-        // оператор перехода на следующий узел
+        // РѕРїРµСЂР°С‚РѕСЂ РїРµСЂРµС…РѕРґР° РЅР° СЃР»РµРґСѓСЋС‰РёР№ СѓР·РµР»
         LinkedListIterator& operator++() override {
-            //если текущий не равен nullptr
+            //РµСЃР»Рё С‚РµРєСѓС‰РёР№ РЅРµ СЂР°РІРµРЅ nullptr
             if (current != nullptr) {
-                //переходим к следующему узлу
+                //РїРµСЂРµС…РѕРґРёРј Рє СЃР»РµРґСѓСЋС‰РµРјСѓ СѓР·Р»Сѓ
                 current = current->next;
             }
-            //возвращаем ссылку на текущий объект
+            //РІРѕР·РІСЂР°С‰Р°РµРј СЃСЃС‹Р»РєСѓ РЅР° С‚РµРєСѓС‰РёР№ РѕР±СЉРµРєС‚
             return *this;
         }
 
@@ -113,16 +113,16 @@ public:
 };
 
 
-// добавление узла в список
+// РґРѕР±Р°РІР»РµРЅРёРµ СѓР·Р»Р° РІ СЃРїРёСЃРѕРє
 template<typename T>
 void LinkedList<T>::addNode(const T& data) {
     Node<T>* newNode = new Node<T>(data);
 
-    // если список пустой, то создаём первый элемент
+    // РµСЃР»Рё СЃРїРёСЃРѕРє РїСѓСЃС‚РѕР№, С‚Рѕ СЃРѕР·РґР°С‘Рј РїРµСЂРІС‹Р№ СЌР»РµРјРµРЅС‚
     if (head == nullptr) {
         head = newNode;
     }
-    // находим последний узел списка и добавляем новый узел после него
+    // РЅР°С…РѕРґРёРј РїРѕСЃР»РµРґРЅРёР№ СѓР·РµР» СЃРїРёСЃРєР° Рё РґРѕР±Р°РІР»СЏРµРј РЅРѕРІС‹Р№ СѓР·РµР» РїРѕСЃР»Рµ РЅРµРіРѕ
     else {
         Node<T>* current = head;
         while (current->next != nullptr) {
@@ -132,26 +132,26 @@ void LinkedList<T>::addNode(const T& data) {
     }
 }
 
-// Удаление узла по значению
+// РЈРґР°Р»РµРЅРёРµ СѓР·Р»Р° РїРѕ Р·РЅР°С‡РµРЅРёСЋ
 template<typename T>
 void LinkedList<T>::removeNode(const T& data) {
-    // если список не пустой
+    // РµСЃР»Рё СЃРїРёСЃРѕРє РЅРµ РїСѓСЃС‚РѕР№
     if (head != nullptr) {
 
-        // если нужно удалить узел из начала
+        // РµСЃР»Рё РЅСѓР¶РЅРѕ СѓРґР°Р»РёС‚СЊ СѓР·РµР» РёР· РЅР°С‡Р°Р»Р°
         if (head->data == data) {
             Node<T>* temp = head;
             head = head->next;
             delete temp;
 
         }
-        // если удаляемый узел не в начале
-        // ищем узел на удаление
+        // РµСЃР»Рё СѓРґР°Р»СЏРµРјС‹Р№ СѓР·РµР» РЅРµ РІ РЅР°С‡Р°Р»Рµ
+        // РёС‰РµРј СѓР·РµР» РЅР° СѓРґР°Р»РµРЅРёРµ
         else {
             Node<T>* current = head;
             while (current->next != nullptr) {
-                // если нужный узел найден
-                // удаляем его и меняем указатели
+                // РµСЃР»Рё РЅСѓР¶РЅС‹Р№ СѓР·РµР» РЅР°Р№РґРµРЅ
+                // СѓРґР°Р»СЏРµРј РµРіРѕ Рё РјРµРЅСЏРµРј СѓРєР°Р·Р°С‚РµР»Рё
                 if (current->next->data == data) {
                     Node<T>* temp = current->next;
                     current->next = current->next->next;
@@ -164,9 +164,9 @@ void LinkedList<T>::removeNode(const T& data) {
     }
 }
 
-// поиск узла
-// true, если есть узел
-// иначе false
+// РїРѕРёСЃРє СѓР·Р»Р°
+// true, РµСЃР»Рё РµСЃС‚СЊ СѓР·РµР»
+// РёРЅР°С‡Рµ false
 template<typename T>
 bool LinkedList<T>::searchNode(T& data) {
     Node<T>* current = head;
@@ -179,8 +179,8 @@ bool LinkedList<T>::searchNode(T& data) {
     return false;
 }
 
-// поиск индекса узла
-// -1, если нет узел
+// РїРѕРёСЃРє РёРЅРґРµРєСЃР° СѓР·Р»Р°
+// -1, РµСЃР»Рё РЅРµС‚ СѓР·РµР»
 template<typename T>
 int LinkedList<T>::searchNodeInd(const T& data) {
     Node<T>* current = head;
@@ -195,11 +195,11 @@ int LinkedList<T>::searchNodeInd(const T& data) {
     return -1;
 }
 
-// значение узла по индексу
+// Р·РЅР°С‡РµРЅРёРµ СѓР·Р»Р° РїРѕ РёРЅРґРµРєСЃСѓ
 template<typename T>
 T& LinkedList<T>::dataByInd(int ind) {
     if (ind < 0) {
-        throw std::invalid_argument("Недопустимое значение индекса");
+        throw std::invalid_argument("РќРµРґРѕРїСѓСЃС‚РёРјРѕРµ Р·РЅР°С‡РµРЅРёРµ РёРЅРґРµРєСЃР°");
     }
     else {
         int i = 0;
@@ -209,7 +209,7 @@ T& LinkedList<T>::dataByInd(int ind) {
 
         while (i < ind) {
             if (current == nullptr || current->next == nullptr) {
-                throw std::invalid_argument("Недопустимое значение индекса");
+                throw std::invalid_argument("РќРµРґРѕРїСѓСЃС‚РёРјРѕРµ Р·РЅР°С‡РµРЅРёРµ РёРЅРґРµРєСЃР°");
             }
             else {
                 current = current->next;
@@ -222,7 +222,7 @@ T& LinkedList<T>::dataByInd(int ind) {
     }
 }
 
-// вывод списка в консоль
+// РІС‹РІРѕРґ СЃРїРёСЃРєР° РІ РєРѕРЅСЃРѕР»СЊ
 template<typename T>
 void LinkedList<T>::printList() {
     Node<T>* current = head;

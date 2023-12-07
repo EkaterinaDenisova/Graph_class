@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "../ConsoleApplication_Graph/Graph.h"
 
+
 using namespace std;
 // тестирование вставки вершин
 TEST(TestGraph, TestInsertVertex) {
