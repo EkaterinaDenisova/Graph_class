@@ -7,6 +7,10 @@
 #include <vector>
 #include <stack>
 #include <queue>
+#include <fstream>
+#include <string>
+#include <sstream>
+#include <climits> 
 
 #include "LinkedList.h"
 
@@ -50,6 +54,7 @@ public:
 
 	// получение веса ребра
 	int GetWeight(const T& vertex1, const T& vertex2);
+	int GetWeightByInd(int ver1, int ver2);
 
 	// получение списка из соседних вершин
 	vector<T> GetNeighbors(const T& vertex);
@@ -80,9 +85,18 @@ public:
 	// обход в ширину
 	vector<T> BreadthFirstSearch(const T& beginVertex);
 
+	// чтение из файла
+	void ReadFromFile(const string& filename);
+	// запись в файл
+	void WriteToFile(const string& filename);
+
 	// алгоритм Беллмана-Форда
 	// возвращает вектор из кратчайших путей до каждой вершины
-	vector<T> Bellman_Ford(const T& beginVertex);
+	//vector<T> Bellman_Ford(const T& beginVertex);
+
+	// алгоритм Дейкстры
+	// возвращает вектор из кратчайших путей до каждой вершины из вершины beginVertex
+	vector<T> dijkstra(const T& beginVertex);
 
 	// итератор для обхода вершин
 	//friend class VertexIterator<T>;
@@ -95,6 +109,9 @@ public:
 
 	// получение матрицы смежности
 	T** GetEdges();
+
+	// очистка графа
+	void ClearGraph();
 };
 
 // конструктор, обнуляет матрицу смежности и переменную graphsize
@@ -152,6 +169,20 @@ bool Graph<T>::GraphEmpty() const {
 		return true;
 	}
 	else return false;
+}
+
+// очистка графа
+template <typename T>
+void Graph<T>::ClearGraph() {
+	vertexList.ClearList();
+
+	// заполнение матрицы смежности нулями
+	for (int i = 0; i < maxGraphSize; i++)
+		for (int j = 0; j < maxGraphSize; j++)
+			edge[i][j] = 0;
+
+	graphsize = 0;
+
 }
 
 // количество вершин
@@ -242,6 +273,21 @@ int Graph<T>::GetWeight(const T& vertex1, const T& vertex2) {
 
 }
 
+// получение веса ребра по индексам вершин
+template <typename T>
+int Graph<T>::GetWeightByInd(int ver1,int ver2) {
+
+	//int ver1 = GetVertexPos(vertex1);
+	//int ver2 = GetVertexPos(vertex2);
+
+	if ((ver1 == -1) || (ver2 == -1)) {
+		throw invalid_argument("Отсутствует требуемая вершина");
+	}
+	else
+		return edge[ver1][ver2];
+
+}
+
 // получение соседей
 template <typename T>
 vector<T> Graph<T>::GetNeighbors(const T& vertex) {
@@ -309,7 +355,7 @@ template <typename T>
 void Graph<T>::InsertVertex(const T& vertex)
 {
 	// проверить, заполнен ли граф и, если да, увеличить maxGraphSize
-	if (graphsize == maxGraphSize) {
+	if ((graphsize+1) == maxGraphSize) {
 		
 		int newmaxGraphSize = maxGraphSize * 2;
 
@@ -528,12 +574,291 @@ vector<T> Graph<T>::BreadthFirstSearch(const T& beginVertex) {
 
 
 // загрузка графа из файла
+// todo
+template <typename T>
+void Graph<T>::ReadFromFile(const string& filename) {
+	ifstream fin(filename);
+
+	if (!fin.is_open()) // если файл не был открыт
+	{
+		throw invalid_argument("Файл не может быть открыт"); 
+	}
+	else {
+		this->ClearGraph(); // очищаем граф
+		string line;
+
+		int numberOfVerticies = 0;
+
+		//numberOfVerticies = fin.readline();
+		getline(fin, line);
+
+		numberOfVerticies = stoi(line);
+		
+		T node;
+		//
+		for (int i = 0; i < numberOfVerticies; i++) {
+			getline(fin, line);
+			//std::istringstream - это объект класса string, 
+			//который используется для преобразования строки в различные переменные,
+			//и аналогично файлы могут быть преобразованы в строки.
+			std::istringstream iss(line);
+			if (!(iss >> node)) {
+				// В случае ошибки чтения строки
+				throw invalid_argument("Ошибка чтения файла");
+			}
+			this->InsertVertex(node);
+		}
+
+		T vertex_1, vertex_2;
+		int weight_1;
+		
+		// Чтение файла построчно
+		while (std::getline(fin, line))
+		{
+			std::istringstream iss(line);
+			
+			// Извлекаем из строки две вершины и вес ребра
+			if (!(iss >> vertex_1 >> vertex_2 >> weight_1))
+			{
+				// В случае ошибки чтения строки
+				throw invalid_argument("Ошибка чтения файла");
+			}
+
+			// Добавляем ребро в граф
+			InsertEdge(vertex_1, vertex_2, weight_1);
+		}
+
+		// Закрываем файл после чтения
+		fin.close();
+
+		// обновляем поле класса
+		graphsize = numberOfVerticies;
+	}
+}
+
+// запись графа в файл
+template <typename T>
+void Graph<T>::WriteToFile(const string& filename) {
+	ofstream fout(filename);
+
+	if (!fout.is_open()) // если файл не был открыт
+	{
+		throw invalid_argument("Файл не может быть открыт");
+	}
+	else {
+		int number = this->NumberOfVertices();
+		fout << number << endl;
+
+		vector<T> vec = this->vertexList.ListToVec();
+		for (int i = 0; i < number; i++) {
+			fout << vec[i] << endl;
+		}
+
+		int numberEdge = 0;// количество ребер
+		/// проход по матрице смежности
+		for (int i = 0; i < NumberOfVertices(); i++)
+		{
+			for (int j = 0; j < NumberOfVertices(); j++)
+			{
+				if (edge[i][j] != 0) {
+					// выводим 2 вершины и ребро
+					fout << vertexList.dataByInd(i) << " " << vertexList.dataByInd(j) << " " << edge[i][j] << "\n";
+					numberEdge++;
+				}
+			}
+		}
+
+		/*fout.close();
+		this->vertexList.printListToFile(filename);
+
+		fout.open(filename, 'a+');*/
 
 
+		fout.close();
+		
+	}
+}
+
+
+// алгоритм Дейкстры
+// возвращает вектор из кратчайших путей до каждой вершины из вершины beginVertex
+template <typename T>
+vector<T> Graph<T>::dijkstra(const T& beginVertex) {
+	int pos = GetVertexPos(beginVertex);
+	if (pos == -1) {
+		throw invalid_argument("Отсутствует требуемая вершина");
+	}
+
+	vector<int> d; // вектор кратчайших растояний
+	vector<bool> used; // вектор посещений
+
+	// изначально расстояния до вершин неизвестны (INT_MAX)
+	// все вершины не посещены (false)
+	for (int i = 0; i < NumberOfVertices(); i++) {
+		d.push_back(INT_MAX);
+		used.push_back(false);
+	}
+
+	d[pos] = 0; // расстояние из вершины до самой себя равно 0
+
+	// повторяем для всех вершин графа
+	for (int k = 0; k < NumberOfVertices(); k++) {
+		// для каждой вершины смотрим расстояние до всех других вершин по матрице смежности
+		for (int i = 0; i < NumberOfVertices(); i++) {
+			int w = GetWeightByInd(pos, i);
+
+			if (w < 0) {
+				throw invalid_argument("Алгоритм Дейкстры не поддерживает отрицательные веса");
+			}
+
+			// если путь до вершины есть, если вершина ещё не была посещена и
+			// если надено меньшее расстояние до данной вершины
+			if ((w != 0) && (used[i] == false) && ((d[pos] + w) < d[i])) {
+				d[i] = d[pos] + w; // записываем новое значение кратчайшего пути
+			}
+		}
+		// вершина пройдена, когда по матрице смежности были проверены все вершины относительно данной
+		used[pos] = true;
+
+		// находим индекс с минимальным значением расстояния на данный момент
+		// (из непросмотренных вершин)
+		int min1 = INT_MAX;
+		for (int j = 0; j < NumberOfVertices(); j++) {
+			if ((d[j] < min1) && (used[j] == false)) {
+				pos = j; // запоминаем индекс данной вершины
+				// от неё продолжится поиск кратчайших путей до остальных вершин
+			}
+		}
+
+	}
+	return d;
+
+	/*for (int k = 0; k < NumberOfVertices(); k++)
+	{
+		// находим индекс вершины с кратчайшим расстояние
+		int min1 = INT_MAX;
+		int index;
+		for (int v = 0; v < NumberOfVertices() - 1; v++) {
+			if (used[v] == false && d[v] <= min1) {
+				min1 = d[v];
+				index = v;
+			}
+		}
+
+		used[index] = true;
+
+		for (int v = 0; v < NumberOfVertices(); v++) {
+			if (!used[v] && edge[index][v] != 0 && d[index] != INT_MAX && d[index] + edge[index][v] < d[v])
+				d[v] = d[index] + edge[index][v];
+
+		}
+
+	}
+
+	return d;*/
+
+
+
+	/*priority_queue< pair<int, int> >, vector< pair<int, int> >, greater< pair<int, int> > > pq;
+
+	// Create a vector for distances and initialize all
+	// distances as infinite (INF)
+	//vector<int> dist(V, INF);
+	vector <int> d; // вектор кратчайших растояний
+
+	for (int i = 0; i < NumberOfVertices(); i++) {
+		d.push_back(INT_MAX);
+	}
+
+	// Insert source itself in priority queue and initialize
+	// its distance as 0.
+	pq.push(make_pair(0, pos));
+	dist[pos] = 0;
+
+	//Looping till priority queue becomes empty (or all
+	//distances are not finalized) 
+	while (!pq.empty()) {
+		// The first vertex in pair is the minimum distance
+		// vertex, extract it from priority queue.
+		// vertex label is stored in second of pair (it
+		// has to be done this way to keep the vertices
+		// sorted distance (distance must be first item
+		// in pair)
+		int u = pq.top().second;
+		pq.pop();
+
+		// 'i' is used to get all adjacent vertices of a
+		// vertex
+		list<pair<int, int> >::iterator i;
+		for (i = adj[u].begin(); i != adj[u].end(); ++i) {
+			// Get vertex label and weight of current
+			// adjacent of u.
+			int v = (*i).first;
+			int weight = (*i).second;
+
+			// If there is shorted path to v through u.
+			if (dist[v] > dist[u] + weight) {
+				// Updating distance of v
+				dist[v] = dist[u] + weight;
+				pq.push(make_pair(dist[v], v));
+			}
+		}
+	}
+
+	// Print shortest distances stored in dist[]
+	printf("Vertex Distance from Source\n");
+	for (int i = 0; i < V; ++i)
+		printf("%d \t\t %d\n", i, dist[i]);
+	*/
+	
+	/*vector <int> d; // вектор кратчайших растояний
+	vector<bool> used; // вектор посещений
+
+	for (int i = 0; i < NumberOfVertices(); i++) {
+		d.push_back(INT_MAX);
+		used.push_back(false);
+	}
+
+	d[pos] = 0; // расстояние из вершины до самой себя равно 0
+
+	for (int k = 0; k < NumberOfVertices(); k++)
+	{
+		// находим кратчайшее расстояние
+		int min1 = INT_MAX;
+		int index;
+		for (int v = 0; v < NumberOfVertices(); v++) {
+			if (used[v] == false && d[v] <= min1) {
+				min1 = d[v];
+				index = v;
+			}
+		}
+
+		used[index] = true;
+
+		for (int v = 0; v < NumberOfVertices(); v++) {
+			if (!used[v] && edge[index][v] && d[index] != INT_MAX && dist[u] + graph[u][v] < dist[v])
+				dist[v] = dist[u] + graph[u][v];
+		}
+
+
+
+		int m = miniDist(distance, Tset);
+		Tset[m] = true;
+		for (int k = 0; k < 6; k++)
+		{
+			// updating the distance of neighbouring vertex
+			if (!Tset[k] && graph[m][k] && distance[m] != INT_MAX && distance[m] + graph[m][k] < distance[k])
+				distance[k] = distance[m] + graph[m][k];
+		}
+	}
+	*/
+
+
+}
 
 // алгоритм Беллмана-Форда
 // возвращает вектор из кратчайших путей до каждой вершины
-template <typename T>
+/*template <typename T>
 vector<T> Graph<T>::Bellman_Ford(const T& beginVertex) {
 	vector<T> v = {};
 
@@ -556,4 +881,4 @@ vector<T> Graph<T>::Bellman_Ford(const T& beginVertex) {
 	}
 	return v;
 	
-}
+}*/

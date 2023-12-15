@@ -14,7 +14,7 @@ TEST(TestGraph, TestInsertVertex) {
 	g1.InsertVertex(5);
 
 	EXPECT_EQ(g1.NumberOfVertices(), 2);
-	EXPECT_EQ(g1.GetMaxSize(), 2);
+	EXPECT_EQ(g1.GetMaxSize(), 4);
 
 	g1.InsertVertex(8);
 	EXPECT_EQ(g1.NumberOfVertices(), 3);

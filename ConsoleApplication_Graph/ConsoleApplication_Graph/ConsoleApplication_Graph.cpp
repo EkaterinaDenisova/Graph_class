@@ -98,7 +98,9 @@ int main()
         Graph<int> g1(2);
         g1.InsertVertex(1); g1.InsertVertex(5); g1.InsertVertex(8);
         g1.InsertVertex(2); g1.InsertVertex(13);
+        
         g1.DeleteVertex(2);
+        cout << "ok1" << "\n";
         g1.InsertEdge(1, 5, 20);
         g1.InsertEdge(5, 8, 45);
         g1.InsertEdge(5, 1, 12);
@@ -107,6 +109,7 @@ int main()
 
         int** matr = g1.GetEdges();
 
+        
         for (int i = 0; i < g1.NumberOfVertices(); i++) {
             for (int j = 0; j < g1.NumberOfVertices(); j++) {
                 cout << matr[i][j] << " ";
@@ -126,6 +129,71 @@ int main()
             cout << "\n";
         }
 
+        cout << "\n\n\nЧтение из файла\n";
+        
+
+        //g1.ClearGraph();
+        cout << "ok2" << "\n";
+
+        g1.ReadFromFile("graph1.txt");
+
+        vector<int> v3 = g1.GetVertexList();
+
+        for (int item : v3) {
+            cout << item << " ";
+        }
+        cout << "\n\n";
+
+        int** matr2 = g1.GetEdges();
+
+        for (int i = 0; i < g1.NumberOfVertices(); i++) {
+            for (int j = 0; j < g1.NumberOfVertices(); j++) {
+                cout << matr2[i][j] << " ";
+            }
+            cout << "\n";
+        }
+
+
+        cout << "\n\n\nЗапись в файл\n";
+        Graph<int> g2(4);
+        g2.InsertVertex(1); g2.InsertVertex(5); g2.InsertVertex(8);
+
+        
+       
+        g2.InsertEdge(1, 5, 200);
+        g2.InsertEdge(5, 8, 450);
+        g2.InsertEdge(5, 1, 120);
+        
+
+        g2.WriteToFile("graph2.txt");
+
+        cout << "ok4" << "\n";
+
+        Graph<int> g3(5);
+        g3.ReadFromFile("graph2.txt");
+        cout << "ok5" << "\n";
+
+        vector<int> v4 = g3.GetVertexList();
+
+        for (int item : v4) {
+            cout << item << " ";
+        }
+        cout << "\n\n";
+
+        int** matr4 = g3.GetEdges();
+
+        for (int i = 0; i < g3.NumberOfVertices(); i++) {
+            for (int j = 0; j < g3.NumberOfVertices(); j++) {
+                cout << matr4[i][j] << " ";
+            }
+            cout << "\n";
+        }
+
+        cout << "\nДейкстра\n";
+        vector<int> v5 = g3.dijkstra(1);
+        for (int item : v5) {
+            cout << item << " ";
+        }
 
     }
     catch (invalid_argument const& ex) {

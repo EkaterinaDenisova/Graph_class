@@ -5,6 +5,7 @@
 #include <vector>
 #include <stdexcept> // для исключений
 #include "AbsIterator.h"
+#include <fstream>
 // класс узла списка
 template <typename T>
 class Node {
@@ -42,6 +43,14 @@ public:
         }
     }
 
+    void ClearList() {
+        while (head != nullptr) {
+            Node<T>* temp = head;
+            head = head->next;
+            delete temp;
+        }
+    }
+
     // добавление узла в конец списка
     void addNode(const T& data);
     // Удаление узла по значению
@@ -55,6 +64,8 @@ public:
     T& dataByInd(int ind);
     // вывод списка в консоль
     void printList();
+    // вывод списка в файл
+    void printListToFile(const std::string& filename);
     // количеств узлов в списке
     int ListSize();
     std::vector<T> ListToVec();
@@ -231,6 +242,24 @@ void LinkedList<T>::printList() {
         current = current->next;
     }
     std::cout << std::endl;
+}
+
+// вывод списка в файл
+template<typename T>
+void LinkedList<T>::printListToFile(const std::string& filename) {
+    std::ofstream fout(filename);
+    if (!fout.is_open()) // если файл не был открыт
+    {
+        throw std::invalid_argument("Файл не может быть открыт");
+    }
+
+    Node<T>* current = head;
+    while (current != nullptr) {
+        fout << current->data << std::endl;
+        current = current->next;
+    }
+
+    fout.close();
 }
 
 template<typename T>
