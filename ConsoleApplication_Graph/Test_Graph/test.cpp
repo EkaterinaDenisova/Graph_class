@@ -226,3 +226,95 @@ TEST(TestGraph, TestSearch) {
 	v1 = g1.BreadthFirstSearch(2);
 	EXPECT_EQ(v1, v);
 }
+
+
+// тестирование алгоритма Дейкстры
+TEST(TestGraph, TestDijkstra) {
+	Graph<int> g1(2);
+
+	g1.InsertVertex(1); g1.InsertVertex(5); g1.InsertVertex(8);
+	g1.InsertVertex(2); g1.InsertVertex(13);
+
+	g1.InsertEdge(1, 5, 20);
+	g1.InsertEdge(5, 8, 45);
+	g1.InsertEdge(5, 1, 12);
+	g1.InsertEdge(8, 13, 99);
+	g1.InsertEdge(2, 13, 125);
+	g1.InsertEdge(2, 5, 54);
+	g1.InsertEdge(13, 1, 49);
+
+	// для вершины 5
+	vector<int> v = { 12, 0, 45, INT_MAX, 144 };
+	vector<int> v1 = g1.dijkstra(5);
+	EXPECT_EQ(v1, v);
+	
+
+	// для вершины 2
+	v = { 66, 54, 99, 0, 125 };
+	v1 = g1.dijkstra(2);
+	EXPECT_EQ(v1, v);
+
+	// для вершины 1
+	v = { 0, 20, 65, INT_MAX, 164 };
+	v1 = g1.dijkstra(1);
+	EXPECT_EQ(v1, v);
+
+	// для несуществующей вершины
+	try {
+		v1 = g1.dijkstra(5);
+		//EXPECT_EQ(1, 2);
+	}
+	catch (invalid_argument const& ex) {
+		string s = ex.what();
+		EXPECT_EQ(s, "Отсутствует требуемая вершина");
+	}
+
+}
+
+// тестирование чтения из файла и вывода в файл
+TEST(TestGraph, TestToFromFile) {
+	
+	Graph<int> g1(2);
+	vector<int> v;
+
+	// запись пустого графа
+	try {
+		g1.WriteToFile("errortest1.txt");
+	}
+	catch (invalid_argument const& ex) {
+		string s = ex.what();
+		EXPECT_EQ(s, "Пустой граф");
+	}
+
+	g1.InsertVertex(1); g1.InsertVertex(5); g1.InsertVertex(8);
+	g1.InsertVertex(2); g1.InsertVertex(13);
+
+	g1.InsertEdge(1, 5, 20);
+	g1.InsertEdge(5, 8, 45);
+	g1.InsertEdge(5, 1, 12);
+	g1.InsertEdge(8, 13, 99);
+	g1.InsertEdge(2, 13, 125);
+	g1.InsertEdge(2, 5, 54);
+	g1.InsertEdge(13, 1, 49);
+
+
+	g1.WriteToFile("graphtest1.txt");
+
+	// чтение
+	Graph<int> g2;
+	g2.ReadFromFile("graphtest1.txt");
+
+	// проверяем, что вершины одинаковые
+	EXPECT_EQ(g1.GetVertexList(), g2.GetVertexList());
+
+	// проверяем, что матрицы смежности одинаковые
+	int** matr1 = g1.GetEdges();
+	int** matr2 = g2.GetEdges();
+
+	for (int i = 0; i < g1.NumberOfVertices(); i++) {
+		for (int j = 0; j < g1.NumberOfVertices(); j++) {
+			EXPECT_EQ(matr1[i][j], matr2[i][j]);
+		}
+	}
+
+}

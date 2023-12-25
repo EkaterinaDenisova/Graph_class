@@ -57,18 +57,18 @@ public:
     void removeNode(const T& data);
     // поиск узла по значению
     // true если узел найден, иначе false
-    bool searchNode(T& data);
+    bool searchNode(T& data) const;
     // поиск индекса узла, если не найден, то -1
-    int searchNodeInd(const T& data);
+    int searchNodeInd(const T& data) const;
     // значение узла по индексу
-    T& dataByInd(int ind);
+    T& dataByInd(int ind) const;
     // вывод списка в консоль
-    void printList();
+    void printList() const;
     // вывод списка в файл
-    void printListToFile(const std::string& filename);
+    void printListToFile(const std::string& filename) const;
     // количеств узлов в списке
-    int ListSize();
-    std::vector<T> ListToVec();
+    int ListSize() const;
+    std::vector<T> ListToVec() const;
 
 
     // класс итератора для Linked List
@@ -179,7 +179,7 @@ void LinkedList<T>::removeNode(const T& data) {
 // true, если есть узел
 // иначе false
 template<typename T>
-bool LinkedList<T>::searchNode(T& data) {
+bool LinkedList<T>::searchNode(T& data) const {
     Node<T>* current = head;
     while (current != nullptr) {
         if (current->data == data) {
@@ -193,7 +193,7 @@ bool LinkedList<T>::searchNode(T& data) {
 // поиск индекса узла
 // -1, если нет узел
 template<typename T>
-int LinkedList<T>::searchNodeInd(const T& data) {
+int LinkedList<T>::searchNodeInd(const T& data) const {
     Node<T>* current = head;
     int ind = 0;
     while (current != nullptr) {
@@ -208,7 +208,7 @@ int LinkedList<T>::searchNodeInd(const T& data) {
 
 // значение узла по индексу
 template<typename T>
-T& LinkedList<T>::dataByInd(int ind) {
+T& LinkedList<T>::dataByInd(int ind) const {
     if (ind < 0) {
         throw std::invalid_argument("Недопустимое значение индекса");
     }
@@ -235,7 +235,7 @@ T& LinkedList<T>::dataByInd(int ind) {
 
 // вывод списка в консоль
 template<typename T>
-void LinkedList<T>::printList() {
+void LinkedList<T>::printList() const {
     Node<T>* current = head;
     while (current != nullptr) {
         std::cout << current->data << " ";
@@ -246,7 +246,7 @@ void LinkedList<T>::printList() {
 
 // вывод списка в файл
 template<typename T>
-void LinkedList<T>::printListToFile(const std::string& filename) {
+void LinkedList<T>::printListToFile(const std::string& filename) const {
     std::ofstream fout(filename);
     if (!fout.is_open()) // если файл не был открыт
     {
@@ -263,7 +263,7 @@ void LinkedList<T>::printListToFile(const std::string& filename) {
 }
 
 template<typename T>
-int LinkedList<T>::ListSize() {
+int LinkedList<T>::ListSize() const {
     int res = 0;
     Node<T>* current = head;
     while (current != nullptr) {
@@ -275,7 +275,7 @@ int LinkedList<T>::ListSize() {
 }
 
 template<typename T>
-std::vector<T> LinkedList<T>::ListToVec() {
+std::vector<T> LinkedList<T>::ListToVec() const {
     std::vector<T> t;
     Node<T>* current = this->head;
     while (current != nullptr) {

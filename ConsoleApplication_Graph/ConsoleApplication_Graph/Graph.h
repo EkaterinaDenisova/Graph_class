@@ -30,11 +30,11 @@ private:
 
 	// методы для поиска вершины и указания ее позиции в списке
 	//int FindVertex(LinkedList<T>& L1, const T& vertex1);
-	int GetVertexPos(const T& vertex1);
+	int GetVertexPos(const T& vertex1) const;
 
 public:
 	// конструктор с заданием максимального числа вершин maxsize
-	Graph(int maxsize);
+	Graph(int maxsize = 1);
 
 	// конструктор копирования и т.д
 
@@ -53,13 +53,13 @@ public:
 	int NumberOfEdges() const;
 
 	// получение веса ребра
-	int GetWeight(const T& vertex1, const T& vertex2);
-	int GetWeightByInd(int ver1, int ver2);
+	int GetWeight(const T& vertex1, const T& vertex2) const;
+	int GetWeightByInd(int ver1, int ver2) const;
 
 	// получение списка из соседних вершин
-	vector<T> GetNeighbors(const T& vertex);
+	vector<T> GetNeighbors(const T& vertex) const;
 	// получение соседних вершин, к которым есть путь
-	vector<T> GetFolowers(const T& vertex);
+	vector<T> GetFolowers(const T& vertex) const;
 
 	// методы модификации графа
 
@@ -80,15 +80,15 @@ public:
 	//int MinimumPath(const T& sVertex, const T& sVertex);
 
 	// обход в глубину
-	vector<T> DepthFirstSearch(const T& beginVertex);
+	vector<T> DepthFirstSearch(const T& beginVertex) const;
 
 	// обход в ширину
-	vector<T> BreadthFirstSearch(const T& beginVertex);
+	vector<T> BreadthFirstSearch(const T& beginVertex) const;
 
 	// чтение из файла
 	void ReadFromFile(const string& filename);
 	// запись в файл
-	void WriteToFile(const string& filename);
+	void WriteToFile(const string& filename) const;
 
 	// алгоритм Беллмана-Форда
 	// возвращает вектор из кратчайших путей до каждой вершины
@@ -96,7 +96,7 @@ public:
 
 	// алгоритм Дейкстры
 	// возвращает вектор из кратчайших путей до каждой вершины из вершины beginVertex
-	vector<T> dijkstra(const T& beginVertex);
+	vector<T> dijkstra(const T& beginVertex) const;
 
 	// итератор для обхода вершин
 	//friend class VertexIterator<T>;
@@ -105,10 +105,10 @@ public:
 	int GetMaxSize() const;
 
 	// получение списка вершин
-	vector<T> GetVertexList();
+	vector<T> GetVertexList() const;
 
 	// получение матрицы смежности
-	T** GetEdges();
+	T** GetEdges() const;
 
 	// очистка графа
 	void ClearGraph();
@@ -212,21 +212,21 @@ int Graph<T>::GetMaxSize() const {
 
 // получение списка вершин
 template <typename T>
-vector<T> Graph<T>::GetVertexList() {
+vector<T> Graph<T>::GetVertexList() const{
 	return vertexList.ListToVec();
 }
 
 
 // получение матрицы смежности
 template <typename T>
-T** Graph<T>::GetEdges() {
+T** Graph<T>::GetEdges() const {
 	return edge;
 }
 
 // получение индекса вершины в списке
 // если вершины нет, то возвращает -1
 template <typename T>
-int Graph<T>::GetVertexPos(const T& vertex1) {
+int Graph<T>::GetVertexPos(const T& vertex1) const {
 
 	return vertexList.searchNodeInd(vertex1);
 
@@ -260,7 +260,7 @@ int Graph<T>::GetVertexPos(const T& vertex1) {
 
 // получение веса ребра
 template <typename T>
-int Graph<T>::GetWeight(const T& vertex1, const T& vertex2) {
+int Graph<T>::GetWeight(const T& vertex1, const T& vertex2) const {
 
 	int ver1 = GetVertexPos(vertex1);
 	int ver2 = GetVertexPos(vertex2);
@@ -275,7 +275,7 @@ int Graph<T>::GetWeight(const T& vertex1, const T& vertex2) {
 
 // получение веса ребра по индексам вершин
 template <typename T>
-int Graph<T>::GetWeightByInd(int ver1,int ver2) {
+int Graph<T>::GetWeightByInd(int ver1,int ver2) const {
 
 	//int ver1 = GetVertexPos(vertex1);
 	//int ver2 = GetVertexPos(vertex2);
@@ -290,7 +290,7 @@ int Graph<T>::GetWeightByInd(int ver1,int ver2) {
 
 // получение соседей
 template <typename T>
-vector<T> Graph<T>::GetNeighbors(const T& vertex) {
+vector<T> Graph<T>::GetNeighbors(const T& vertex) const {
 	vector<T> v = {};
 	int pos = GetVertexPos(vertex);
 
@@ -331,7 +331,7 @@ vector<T> Graph<T>::GetNeighbors(const T& vertex) {
 }
 
 template <typename T>
-vector<T> Graph<T>::GetFolowers(const T& vertex) {
+vector<T> Graph<T>::GetFolowers(const T& vertex) const {
 	vector<T> v = {};
 	int pos = GetVertexPos(vertex);
 
@@ -489,7 +489,7 @@ void Graph<T>::DeleteEdge(const T& vertex1, const T& vertex2) {
 
 // обход в глубину
 template <typename T>
-vector<T> Graph<T>::DepthFirstSearch(const T& beginVertex) {
+vector<T> Graph<T>::DepthFirstSearch(const T& beginVertex) const {
 
 	if (GetVertexPos(beginVertex) == -1) {
 		throw invalid_argument("Отсутствует требуемая вершина");
@@ -532,7 +532,7 @@ vector<T> Graph<T>::DepthFirstSearch(const T& beginVertex) {
 
 // обход в ширину
 template <typename T>
-vector<T> Graph<T>::BreadthFirstSearch(const T& beginVertex) {
+vector<T> Graph<T>::BreadthFirstSearch(const T& beginVertex) const {
 
 	if (GetVertexPos(beginVertex) == -1) {
 		throw invalid_argument("Отсутствует требуемая вершина");
@@ -574,7 +574,7 @@ vector<T> Graph<T>::BreadthFirstSearch(const T& beginVertex) {
 
 
 // загрузка графа из файла
-// todo
+// todo коммент про то, что хранится в файле
 template <typename T>
 void Graph<T>::ReadFromFile(const string& filename) {
 	ifstream fin(filename);
@@ -638,12 +638,16 @@ void Graph<T>::ReadFromFile(const string& filename) {
 
 // запись графа в файл
 template <typename T>
-void Graph<T>::WriteToFile(const string& filename) {
+void Graph<T>::WriteToFile(const string& filename) const{
 	ofstream fout(filename);
 
 	if (!fout.is_open()) // если файл не был открыт
 	{
 		throw invalid_argument("Файл не может быть открыт");
+	}
+	else if (graphsize == 0) {
+		fout.close();
+		throw invalid_argument("Пустой граф");
 	}
 	else {
 		int number = this->NumberOfVertices();
@@ -683,7 +687,7 @@ void Graph<T>::WriteToFile(const string& filename) {
 // алгоритм Дейкстры
 // возвращает вектор из кратчайших путей до каждой вершины из вершины beginVertex
 template <typename T>
-vector<T> Graph<T>::dijkstra(const T& beginVertex) {
+vector<T> Graph<T>::dijkstra(const T& beginVertex) const {
 	int pos = GetVertexPos(beginVertex);
 	if (pos == -1) {
 		throw invalid_argument("Отсутствует требуемая вершина");
